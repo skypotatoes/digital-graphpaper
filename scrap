@@ -1,0 +1,6 @@
+
+    push();
+    for(i=1;i<10;i++){
+      circle(0,-yScale*i,5)
+    }
+    pop();
