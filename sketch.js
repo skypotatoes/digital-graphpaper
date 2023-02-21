@@ -198,7 +198,7 @@ function draw() {
 
   //console.log("points below: "+pointsBelow)
   for (let i = -integersBelow;
-    i <= integersAbove;
+    i <= integersAbove+1;
     //i <= integersAbove origin AND (i<=20 AND i>=-20)
     i++) {
     //    console.log(i)
@@ -207,7 +207,7 @@ function draw() {
     if (pixelsLeftOfOrigin <= 0){
       //console.log("The origin is left of the left screen edge") 
      // console.log("Pixels Left of Origin"+pixelsLeftOfOrigin)
-     // console.log("integers above: "+integersAbove)
+     // consodle.log("integers above: "+integersAbove)
       //   s
       //   
       push();
@@ -215,11 +215,11 @@ function draw() {
         //console.log("# Spawned leftEdge:" + i)
         stroke('green')
         circle((-pixelsLeftOfOrigin + xScale),(0-yScale*i),3)
-        line((-pixelsLeftOfOrigin + xScale),(pixelsAboveOriginY + yScale),(-pixelsLeftOfOrigin + xScale),(pixelsBelowOriginY + yScale)) 
+        line((-pixelsLeftOfOrigin + xScale),(0-yScale*i),(-pixelsLeftOfOrigin + xScale),(0-yScale*(i-1))) 
         //^^^    x coords are good, need to correct ycoords
-        console.log("point x1,y1: "+ ((-pixelsLeftOfOrigin + xScale))+","+((pixelsAboveOriginY + yScale)));
-        console.log("point x2,y2: "+ ((-pixelsLeftOfOrigin + xScale))+","+((pixelsBelowOriginY + yScale)));
-
+    //    console.log("point x1,y1: "+ (-pixelsLeftOfOrigin + xScale)+","+(0-yScale*i));
+    //    console.log("point x2,y2: "+ (-pixelsLeftOfOrigin + xScale)+","+(0-yScale*(i-1)));
+//need to spawn an additional extra point in the positive direction so green line continues to screen edge 
       //  console.log("yScale*i: "+yScale*i)
       //  console.log("i: "+i)
       //  console.log("x,y: "+(-pixelsLeftOfOrigin + xScale)+ ","+yScale*i)
