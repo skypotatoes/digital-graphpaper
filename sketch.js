@@ -1,3 +1,11 @@
+//Initial setup: set the cursor position and window zoom here
+// set the cursor starting position here
+let CursorStartX = 5;
+let CursorStartY = 10;
+//Adjust starting scale here:
+let yScale = 50;
+let xScale = 230;
+
 graphX = window.innerWidth;
 graphY = window.innerHeight;
 // graphX = 500;
@@ -17,8 +25,10 @@ function f(x) { return Math.sin(x) }
 //let xMax = 
 let yMin = -graphY / 2;
 let yMax = graphY / 2
-let yScale = 300;
-let xScale = 50;
+
+
+
+
 let xMin = -graphX / 2 / xScale;
 let xMax = graphX / 2 / xScale;
 let step = 1 / xScale;
@@ -52,14 +62,14 @@ function getValues(f, xMin, xMax, step, xScale, yScale) {
 
   xMin = Math.min(...Xarr);
   xMax = Math.max(...Xarr);
-  xScale = (xMax * graphX / 2)
+  xScale = (230)
 
   console.log("xScale set: " + xScale)
 
   yMin = Math.min(...Yarr);
   yMax = Math.max(...Yarr);
   //yScale = (yMax * graphY / 2);
-  yScale=300;
+  yScale = 230;
   console.log("yScale set: " + yScale)
   //step=(1/yScale)
 
@@ -73,8 +83,12 @@ function setup() {
   createCanvas(graphX, graphY);
 
 }
-let yPos = 0;
-let xPos = 0;
+
+
+
+
+let xPos = 0-xScale*CursorStartX;
+let yPos = 0-yScale*-CursorStartY;
 function draw() {
   clear();
   if (keyIsDown(UP_ARROW)) {
@@ -86,14 +100,14 @@ function draw() {
     yScale -= 1
     console.log("yScale: " + yScale)
   }
-if(yScale<15){yScale=15;}
+  if (yScale < 15) { yScale = 15; }
   if (keyIsDown(LEFT_ARROW)) {
     xScale -= 1
-    // console.log("xScale: " + xScale)
+    console.log("xScale: " + xScale)
   }
   if (keyIsDown(RIGHT_ARROW)) {
     xScale += 1
-    // console.log("xScale: " + xScale)
+    console.log("xScale: " + xScale)
   }
   if (keyIsDown(87)) {
     yPos += 1
@@ -159,32 +173,76 @@ if(yScale<15){yScale=15;}
 
   //determine how many markers should be appearing onscreen.
   //how much space is above the origin?
-  let aboveOriginY=(height-1)/2+yPos
- // console.log("above OriginY: "+aboveOriginY)
-//  console.log("pixels above 0,0: "+aboveOriginY)
+  let pixelsAboveOriginY = (height - 1) / 2 + yPos
+  let pixelsBelowOriginY = (height - 1) / 2 - yPos
+  // console.log("pixels above OriginY: "+pixelsAboveOriginY)
+  // console.log("pixels below OriginY: "+pixelsBelowOriginY)
+  //  console.log("pixels above 0,0: "+aboveOriginY)
   //how much space is below the origin?
-  let belowOriginY=(height-1)/2-yPos
-//  console.log("pixels below 0,0: "+belowOriginY)
-let leftOfOrigin=(width-1)/2+xPos
-let rightOfOrigin=(width-1)/2-xPos
 
-console.log("leftOfOrigin: "+leftOfOrigin)
-console.log("rightOfOrigin: "+rightOfOrigin); 
+  //  console.log("pixels below 0,0: "+belowOriginY)
+  let pixelsLeftOfOrigin = (width - 1) / 2 + xPos
+  let pixelsRightOfOrigin = (width - 1) / 2 - xPos
 
-let integersAbove = Math.floor(aboveOriginY/yScale)
-let integersBelow = Math.floor(belowOriginY/yScale)
 
-//console.log("points below: "+pointsBelow)
-for (let i=-integersBelow;
+  //console.log("pixels left of Origin: "+pixelsLeftOfOrigin)
+  //console.log("pixels right of Origin: "+ pixelsRightOfOrigin)
+
+  //console.log("leftOfOrigin: "+pixelsLeftOfOrigin)
+  //console.log("rightOfOrigin: "+pixelsRightOfOrigin); 
+
+  let integersAbove = Math.floor(pixelsAboveOriginY / yScale)
+  let integersBelow = Math.floor(pixelsBelowOriginY / yScale)
+  let integersLeft = Math.floor(pixelsLeftOfOrigin / xScale)
+  let integersRight = Math.floor(pixelsRightOfOrigin)
+
+  //console.log("points below: "+pointsBelow)
+  for (let i = -integersBelow;
+    i <= integersAbove;
+    //i <= integersAbove origin AND (i<=20 AND i>=-20)
+    i++) {
+    //    console.log(i)
+    //    console.log("b@$%#!! : "+(i<=integersAbove && i<=20 ));
+
+    if (pixelsLeftOfOrigin <= 0){
+      //console.log("The origin is left of the left screen edge") 
+     // console.log("Pixels Left of Origin"+pixelsLeftOfOrigin)
+     // console.log("integers above: "+integersAbove)
+      //   s
+      //   
+      push();
+        line(-pixelsLeftOfOrigin, 0-yScale*i,(-pixelsLeftOfOrigin + xScale), (0-yScale*i))
+        //console.log("# Spawned leftEdge:" + i)
+        stroke('green')
+        circle((-pixelsLeftOfOrigin + xScale),(0-yScale*i),3)
+        line((-pixelsLeftOfOrigin + xScale),(pixelsAboveOriginY + yScale),(-pixelsLeftOfOrigin + xScale),(pixelsBelowOriginY + yScale)) 
+        //^^^    x coords are good, need to correct ycoords
+        console.log("point x1,y1: "+ ((-pixelsLeftOfOrigin + xScale))+","+((pixelsAboveOriginY + yScale)));
+        console.log("point x2,y2: "+ ((-pixelsLeftOfOrigin + xScale))+","+((pixelsBelowOriginY + yScale)));
+
+      //  console.log("yScale*i: "+yScale*i)
+      //  console.log("i: "+i)
+      //  console.log("x,y: "+(-pixelsLeftOfOrigin + xScale)+ ","+yScale*i)
+          stroke('red')
+          textFont('Courier')
+          textSize(16);
+           text(i, -pixelsLeftOfOrigin, 7 - yScale * i) // displays the integer e.g. 1,2,etc
+           stroke('black')
+          // text("x: "+((-pixelsLeftOfOrigin + xScale)),(10-pixelsLeftOfOrigin + xScale),(0-yScale*i))
+          //w text("y: "+(yScale*i),(10-pixelsLeftOfOrigin + xScale),13-(yScale*i));
+
+
+  // text('x:' + -xPos / xScale, 10 - xPos, -yPos);
+  // text('y:' + yPos / yScale, 10 - xPos, 13 - yPos)
+
+
+        pop();
+      
   
-  i<=integersAbove  ;
-  //i <= integersAbove origin AND (i<=20 AND i>=-20)
-  
-  i++){
-//    console.log(i)
-//    console.log("b@$%#!! : "+(i<=integersAbove && i<=20 ));
+  }
+     
     line(xScale, -yScale * i, 0, -yScale * i)
-//    console.log("# Spawned:" + i)
+    //console.log("# Spawned:" + i)
     push();
     stroke('red')
     textSize(16);
@@ -192,12 +250,15 @@ for (let i=-integersBelow;
     textFont('Courier');
     text(i, 0, 7 - yScale * i)
     pop();
-} 
+
+
+
+  }
 
 
 
 
-pop();
+  pop();
 
 
   //height of screen  
@@ -225,7 +286,8 @@ pop();
   textFont('Courier');
   text('x:' + -xPos / xScale, 10 - xPos, -yPos);
   text('y:' + yPos / yScale, 10 - xPos, 13 - yPos);
-
+  text('xScale: '+xScale,10-xPos,40-yPos)
+  text('yScale: '+yScale,10-xPos,60-yPos)
   // line(-xPos,-yPos,-xPos-25,-yPos)
   // text('xr:'+xScale, -20-xPos, -5-yPos)
   // text('yr:'+yScale,-10-xPos,-60-yPos)
