@@ -1,11 +1,12 @@
 //Initial setup: set the cursor position and window zoom here
 // set the cursor starting position here
-let CursorStartX = 5;
-let CursorStartY = 10;
+let CursorStartX = -4.602;
+let CursorStartY = 1.295;
 //Adjust starting scale here:
-let yScale = 50;
-let xScale = 230;
+let yScale = 89;
+let xScale = 71;
 
+let cnv;
 graphX = window.innerWidth;
 graphY = window.innerHeight;
 // graphX = 500;
@@ -80,34 +81,48 @@ function getValues(f, xMin, xMax, step, xScale, yScale) {
 arr = getValues(f, xMin, xMax, step);
 
 function setup() {
-  createCanvas(graphX, graphY);
+  cnv=createCanvas(graphX, graphY);
 
 }
 
 
 
 
-let xPos = 0-xScale*CursorStartX;
-let yPos = 0-yScale*-CursorStartY;
+let xPos = 0 - xScale * CursorStartX;
+let yPos = 0 - yScale * -CursorStartY;
 function draw() {
   clear();
   if (keyIsDown(UP_ARROW)) {
-
+    
     yScale += 1
-    console.log("yScale: " + yScale)
+
+    if(keyIsDown(16)){
+      yScale+=1
+    }
+
+   // console.log("yScale: " + yScale)
   }
   if (keyIsDown(DOWN_ARROW)) {
     yScale -= 1
-    console.log("yScale: " + yScale)
+    if(keyIsDown(16)){
+      yScale-=1
+    }
   }
   if (yScale < 15) { yScale = 15; }
+  if (xScale < 15) { xScale = 15; }
   if (keyIsDown(LEFT_ARROW)) {
-    xScale -= 1
-    console.log("xScale: " + xScale)
+    
+    xScale -= 1;
+    if(keyIsDown(16)){
+      xScale-=1
+    }
   }
   if (keyIsDown(RIGHT_ARROW)) {
     xScale += 1
-    console.log("xScale: " + xScale)
+    if(keyIsDown(16)){
+      xScale+=1
+    }
+    //console.log("xScale: " + xScale)
   }
   if (keyIsDown(87)) {
     yPos += 1
@@ -145,45 +160,18 @@ function draw() {
 
   // //this is where i lay down the axis marker 1-9etc lines     
   push();
-  // for (let i = 1; i * yScale < graphY / 2; i++) {
   //    console.log("i: "+i)
   //    console.log("graphY: "+graphY)
   //    console.log("yScale: "+yScale)
-
-  //   line(xScale, -yScale * i, 0, -yScale * i)
-  //   //console.log("Spawned y-mark " + i)
-  //   push();
-  //   stroke('red')
-  //   textSize(16);
-  //   noFill();
-  //   textFont('Courier');
-  //   text(i, 0, 7 - yScale * i)
-  //   pop();
-
-  //   line(xScale, yScale * i, 0, yScale * i)
-  //   //console.log("Spawned y-mark " + -i)
-  //   push();
-  //   stroke('red')
-  //   textSize(16);
-  //   noFill();
-  //   textFont('Courier');
-  //   text(-i, 0, 7 + yScale * i)
-  //   pop();
-  // }
-
   //determine how many markers should be appearing onscreen.
   //how much space is above the origin?
-  let pixelsAboveOriginY = (height - 1) / 2 + yPos
-  let pixelsBelowOriginY = (height - 1) / 2 - yPos
-  // console.log("pixels above OriginY: "+pixelsAboveOriginY)
-  // console.log("pixels below OriginY: "+pixelsBelowOriginY)
-  //  console.log("pixels above 0,0: "+aboveOriginY)
+  let pixelsAboveOrigin = (height - 1) / 2 + yPos
+  let pixelsBelowOrigin = (height - 1) / 2 - yPos
   //how much space is below the origin?
-
   //  console.log("pixels below 0,0: "+belowOriginY)
   let pixelsLeftOfOrigin = (width - 1) / 2 + xPos
   let pixelsRightOfOrigin = (width - 1) / 2 - xPos
-
+  //console.log(pixelsRightOfOrigin)
 
   //console.log("pixels left of Origin: "+pixelsLeftOfOrigin)
   //console.log("pixels right of Origin: "+ pixelsRightOfOrigin)
@@ -191,72 +179,118 @@ function draw() {
   //console.log("leftOfOrigin: "+pixelsLeftOfOrigin)
   //console.log("rightOfOrigin: "+pixelsRightOfOrigin); 
 
-  let integersAbove = Math.floor(pixelsAboveOriginY / yScale)
-  let integersBelow = Math.floor(pixelsBelowOriginY / yScale)
+  let integersAbove = Math.floor(pixelsAboveOrigin / yScale)
+  let integersBelow = Math.floor(pixelsBelowOrigin / yScale)
   let integersLeft = Math.floor(pixelsLeftOfOrigin / xScale)
-  let integersRight = Math.floor(pixelsRightOfOrigin)
+  let integersRight = Math.floor(pixelsRightOfOrigin/xScale)
+  // console.log("left: "+integersLeft)
+  // console.log("right: "+integersRight)
+  
 
   //console.log("points below: "+pointsBelow)
   for (let i = -integersBelow;
-    i <= integersAbove+1;
-    //i <= integersAbove origin AND (i<=20 AND i>=-20)
+    i <= integersAbove + 1;    //i <= integersAbove origin
     i++) {
-    //    console.log(i)
-    //    console.log("b@$%#!! : "+(i<=integersAbove && i<=20 ));
-
-    if (pixelsLeftOfOrigin <= 0){
-      //console.log("The origin is left of the left screen edge") 
-     // console.log("Pixels Left of Origin"+pixelsLeftOfOrigin)
-     // consodle.log("integers above: "+integersAbove)
-      //   s
-      //   
+    if (pixelsLeftOfOrigin <= 0) {
       push();
-        line(-pixelsLeftOfOrigin, 0-yScale*i,(-pixelsLeftOfOrigin + xScale), (0-yScale*i))
-        //console.log("# Spawned leftEdge:" + i)
-        stroke('green')
-        circle((-pixelsLeftOfOrigin + xScale),(0-yScale*i),3)
-        line((-pixelsLeftOfOrigin + xScale),(0-yScale*i),(-pixelsLeftOfOrigin + xScale),(0-yScale*(i-1))) 
-        //^^^    x coords are good, need to correct ycoords
-    //    console.log("point x1,y1: "+ (-pixelsLeftOfOrigin + xScale)+","+(0-yScale*i));
-    //    console.log("point x2,y2: "+ (-pixelsLeftOfOrigin + xScale)+","+(0-yScale*(i-1)));
-//need to spawn an additional extra point in the positive direction so green line continues to screen edge 
-      //  console.log("yScale*i: "+yScale*i)
-      //  console.log("i: "+i)
-      //  console.log("x,y: "+(-pixelsLeftOfOrigin + xScale)+ ","+yScale*i)
-          stroke('red')
-          textFont('Courier')
-          textSize(16);
-           text(i, -pixelsLeftOfOrigin, 7 - yScale * i) // displays the integer e.g. 1,2,etc
-           stroke('black')
-          // text("x: "+((-pixelsLeftOfOrigin + xScale)),(10-pixelsLeftOfOrigin + xScale),(0-yScale*i))
-          //w text("y: "+(yScale*i),(10-pixelsLeftOfOrigin + xScale),13-(yScale*i));
+      line(-pixelsLeftOfOrigin, 0 - yScale * i, (-pixelsLeftOfOrigin + xScale), (0 - yScale * i))
+      stroke('green')
+      line((-pixelsLeftOfOrigin + xScale), (0 - yScale * i), (-pixelsLeftOfOrigin + xScale), (0 - yScale * (i - 1)))
+      stroke('red');
+      textFont('Courier');
+      textSize(16);
+      text(i, -pixelsLeftOfOrigin, 7 - yScale * i) // displays the integer e.g. 1,2,etc
+      stroke('black')
+      pop();
+    }
 
-
-  // text('x:' + -xPos / xScale, 10 - xPos, -yPos);
-  // text('y:' + yPos / yScale, 10 - xPos, 13 - yPos)
-
-
-        pop();
-      
+    if (pixelsRightOfOrigin - xScale <= 0) {
+      push();
+      line(((pixelsRightOfOrigin - xScale)), (0 + yScale * i), width, (0 + yScale * i));
+      stroke('green');
+      line((pixelsRightOfOrigin - xScale), (0 - yScale * i), (pixelsRightOfOrigin), (1 - yScale * (i)));
+      line((pixelsRightOfOrigin - xScale), (0 - yScale * i), (pixelsRightOfOrigin - xScale), (1 - yScale * (i - 1)));
+      stroke('red');
+      textFont('Courier');
+      textSize(16);
+      text(i, pixelsRightOfOrigin - xScale, 7 - yScale * i) // displays the integer e.g. 1,2,etc
+      pop();
+    }
   
-  }
-     
+ 
+
+//the y-axis and integers marks
     line(xScale, -yScale * i, 0, -yScale * i)
-    //console.log("# Spawned:" + i)
     push();
     stroke('red')
     textSize(16);
     noFill();
     textFont('Courier');
     text(i, 0, 7 - yScale * i)
+    stroke('grey')
+    line(-pixelsLeftOfOrigin,0-i*yScale, pixelsRightOfOrigin,0-i*yScale)
+
     pop();
 
 
 
+//circle(-pixelsLeftOfOrigin,0-i*yScale,50)
+//circle(pixelsRightOfOrigin,0-i*yScale,50)
+
   }
 
 
+  for (let j = -integersLeft;
+    j <= integersRight + 1;    //i <= integersAbove origin
+    j++) {
+     // console.log(j)
+     
+     if (pixelsBelowOrigin <= 0) {
+       push();
+      //  circle(xScale*j,pixelsBelowOrigin-yScale,30)
+      //  circle(xScale*j,0+pixelsBelowOrigin,30)
+      stroke('green') ;
+       line(xScale*j,pixelsBelowOrigin-yScale,xScale*j,0+pixelsBelowOrigin)
+    //   line(-pixelsLeftOfOrigin, 0 - yScale * i, (-pixelsLeftOfOrigin + xScale), (0 - yScale * i))
+    //   
+    //   line((-pixelsLeftOfOrigin + xScale), (0 - yScale * i), (-pixelsLeftOfOrigin + xScale), (0 - yScale * (i - 1)))
+      stroke('red');
+      textFont('Courier');
+      textSize(16);
+       text(j, xScale*j,0+pixelsBelowOrigin) // displays the integer e.g. 1,2,etc
+    //   stroke('black')
+       pop();
+      }
 
+    // if (pixelsRightOfOrigin - xScale <= 0) {
+    //   push();
+    //   line(((pixelsRightOfOrigin - xScale)), (0 + yScale * i), width, (0 + yScale * i));
+    //   stroke('green');
+    //   line((pixelsRightOfOrigin - xScale), (0 - yScale * i), (pixelsRightOfOrigin), (1 - yScale * (i)));
+    //   line((pixelsRightOfOrigin - xScale), (0 - yScale * i), (pixelsRightOfOrigin - xScale), (1 - yScale * (i - 1)));
+    //   stroke('red');
+    //   textFont('Courier');
+    //   textSize(16);
+    //   text(i, pixelsRightOfOrigin - xScale, 7 - yScale * i) // displays the integer e.g. 1,2,etc
+    //   pop();
+    // }
+
+    
+    line(xScale * width / 2, 0, -xScale * width / 2, 0) // the x-axis
+
+//the x-axis and integers marks
+line(xScale*j, -yScale, xScale*j, 0)
+push();
+stroke('red')
+textSize(16);
+noFill();
+textFont('Courier');
+text(j, (0 +xScale * j),0)
+//console.log(0 +xScale * j)
+stroke('grey')
+line(j*xScale, -pixelsAboveOrigin,j*xScale, pixelsBelowOrigin)
+pop();
+}
 
   pop();
 
@@ -279,15 +313,14 @@ function draw() {
 
   //scale(1, -1); //flip the y-axis
   stroke('red');
-  const Dot = (0, 0)
-  point(Dot);
+  point(0, 0);
   textSize(16);
   noFill();
   textFont('Courier');
   text('x:' + -xPos / xScale, 10 - xPos, -yPos);
   text('y:' + yPos / yScale, 10 - xPos, 13 - yPos);
-  text('xScale: '+xScale,10-xPos,40-yPos)
-  text('yScale: '+yScale,10-xPos,60-yPos)
+  text('xScale: ' + xScale, 10 - xPos, 40 - yPos)
+  text('yScale: ' + yScale, 10 - xPos, 60 - yPos)
   // line(-xPos,-yPos,-xPos-25,-yPos)
   // text('xr:'+xScale, -20-xPos, -5-yPos)
   // text('yr:'+yScale,-10-xPos,-60-yPos)
